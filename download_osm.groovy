@@ -22,11 +22,11 @@ import groovy.time.*
 // change from downloading sub-regions to europe
 def download( URL url, File file)
 {
-    def ostream = file.newOutputStream()
-    
-    ostream << url.bytes
-    ostream.flush()
-    ostream.close()
+    url.withInputStream { input ->
+        file.withOutputStream { output -> 
+            output << input
+        }
+    }        
 }
 
 //http://download.geofabrik.de/europe/albania-latest.osm.bz2
@@ -38,10 +38,13 @@ def download( URL url, File file)
 def f = new File("/tmp/osm/osm_download.txt")
 
 // Test list:
-def osmSubRegionsLayerList = ["antarctica", "europe/albania", "europe/andorra", "europe/azores", "europe/cyprus", "europe/faroe-islands","europe/isle-of-man", "europe/kosovo", "europe/liechtenstein"]
+//def osmSubRegionsLayerList = ["antarctica", "europe/albania", "europe/andorra", "europe/azores", "europe/cyprus", "europe/faroe-islands","europe/isle-of-man", "europe/kosovo", "europe/liechtenstein"]
 
 // Real list:
-//def osmSubRegionsLayerList = ["africa", "antarctica", "asia", "australia-oceania", "central-america", "north-america", "south-america", "europe/albania", "europe/andorra", "europe/austria", "europe/azores", "europe/belarus", "europe/belgium", "europe/bosnia-herzegovina", "europe/bulgaria", "europe/croatia", "europe/cyprus", "europe/",  "europe/czech-republic", "europe/denmark", "europe/estonia",  "europe/faroe-islands", "europe/finland", "europe/france", "europe/georgia",  "europe/germany", "europe/great-britain",  "europe/greece", "europe/hungary", "europe/iceland", "europe/ireland-and-northern-ireland", "europe/isle-of-man", "europe/italy", "europe/kosovo", "europe/latvia", "europe/liechtenstein", "europe/lithuania", "europe/luxembourg", "europe/macedonia", "europe/malta", "europe/moldova", "europe/monaco", "europe/montenegro", "europe/netherlands", "europe/norway", "europe/poland", "europe/portugal", "europe/romania", "europe/russia-european-part", "europe/serbia", "europe/slovakia", "europe/slovenia", "europe/spain", "europe/sweden", "europe/switzerland", "europe/turkey", "europe/ukraine"]
+//def osmSubRegionsLayerList = ["africa", "antarctica", "asia", "australia-oceania", "central-america", "north-america", "south-america", "europe/albania", "europe/andorra", "europe/austria", "europe/azores", "europe/belarus", "europe/belgium", "europe/bosnia-herzegovina", "europe/bulgaria", "europe/croatia", "europe/cyprus", "europe/czech-republic", "europe/denmark", "europe/estonia",  "europe/faroe-islands", "europe/finland", "europe/france", "europe/georgia",  "europe/germany", "europe/great-britain",  "europe/greece", "europe/hungary", "europe/iceland", "europe/ireland-and-northern-ireland", "europe/isle-of-man", "europe/italy", "europe/kosovo", "europe/latvia", "europe/liechtenstein", "europe/lithuania", "europe/luxembourg", "europe/macedonia", "europe/malta", "europe/moldova", "europe/monaco", "europe/montenegro", "europe/netherlands", "europe/norway", "europe/poland", "europe/portugal", "europe/romania", "europe/russia-european-part", "europe/serbia", "europe/slovakia", "europe/slovenia", "europe/spain", "europe/sweden", "europe/switzerland", "europe/turkey", "europe/ukraine"]
+
+// Error make up list
+def osmSubRegionsLayerList = ["europe"]
 
 
 def currentStartTime = new Date()
@@ -67,7 +70,7 @@ for (osmLayer in osmSubRegionsLayerList){
     
     // gets current osm layer
     //TODO: Change download directory location or have it set as a param
-    //download(fileUrl.toURL(), "/tmp/osm/$osmLayer-latest.osm.bz2" as File)
+    download(fileUrl.toURL(), "/tmp/osm/$osmLayer-latest.osm.bz2" as File)
     
      def currentLayerEndTime = new Date()
      f.append("\nEnded at: $currentLayerEndTime")

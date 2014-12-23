@@ -1,41 +1,37 @@
-def cmdDeleteDb = ["dropdb", "omar_base"]
-//def cmdAddDb = ["createdb", "osm-auto-merc"]
-def procDeleteDb = cmdDeleteDb.execute()
-procDeleteDb.waitFor()
-//def procAddDb = cmdAddDb.execute()
-//procAddDb.waitFor()
+// TODO: Need to add the commands for the dropdb, createdb, psql, and osm2pgsql for each of the sub-regions.
+// def cmdsAfrica = [
+    //["dropdb", "-U", "postgres", "osm-Africa"],
+    //["createdb", "-U", "postgres", "osm-Africa"],
+    //["psql", "-U", "postgres", "-d", "osm-Africa", "-c", "create extension postgis"],
+    //["osm2pgsql", "$osmImportItem" +  "africa-latest.osm.bz2", "--create", "-d", "osm-Africa", "-U", "postgres", "-P", "5432", "-S", "default.style"]
+//]
 
-// TODO: Need to be able to add PostGIS extension to the newly created
-// databases or be loop through all of the DB's and drop the osm
-// tables
+// TODO: Add logging...
 
-//println "return code: ${procAddPostgisExt.exitValue()}"
-//println "stderr: ${procAddPostgisExt.err.text}"
-//println "stdout: ${procAddPostgisExt.in.text}"
+def databaseName = "groovyTestDB"
 
-// More down here...
-println "return code: ${ procDeleteDb.exitValue()}"
-println "stderr: ${procDeleteDb.err.text}"
-println "stdout: ${procDeleteDb.in.text}" // *out* from the external program is *in* for groovy
+// TODO: Create the list here...
+def osmImportList = ["liechtenstein"]
 
-//println "return code: ${ procAddDb.exitValue()}"
-//println "stderr: ${procAddDb.err.text}"
-//println "stdout: ${procAddDb.in.text}"
+// TODO: Create the for...loop
+for (osmImportItem in osmImportList){
 
-//def osmImportLayerList = ["azores", "cyprus"]
+    def cmds = [
+        ["dropdb", "-U", "postgres", databaseName],
+        ["createdb", "-U", "postgres", databaseName],
+        ["psql", "-U", "postgres", "-d", databaseName, "-c", "create extension postgis"],
+        ["osm2pgsql", "$osmImportItem" +  "-latest.osm.bz2", "--create", "-d", "$databaseName", "-U", "postgres", "-P", "5432", "-S", "default.style"]
+    ]
 
-//for (osmImportLayer in osmImportLayerList){
+    cmds.each { cmd ->
+        println cmd
+        def proc = cmd.execute()
+        proc.consumeProcessOutput()
+        println "\t${proc.waitFor()}"
 
-    //println "Importing --> $osmImportLayer"
-    
-    //def command = ["osm2pgsql", "$osmImportLayer-latest.osm.bz2", "--append", "--unlogged", "-merc", "-d", "osm-auto-merc", "-U", "postgres", "-P", "5432", "-S", "default.style"]
-    //def proc = command.execute()
-    //proc.waitFor()  
-    
-    // Obtain status and output
-    //println "return code: ${ proc.exitValue()}"
-    //println "stderr: ${proc.err.text}"
-    //println "stdout: ${proc.in.text}"
+    }
 
-//}
+}
+
+
  
