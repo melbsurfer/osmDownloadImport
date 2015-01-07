@@ -78,7 +78,7 @@ for (osmLayer in osmSubRegionsLayerList){
      f.append("\nTotal run time: $durationLayerRunTime")
     
     // TODO: Add counter for list/array to exit loop instead of looking for file name? Use:  osmSubRegionsLayerList.size()
-    if ("$osmLayer" == "europe/liechtenstein"){
+    if ("$osmLayer" == "europe/ukraine"){
         println ("Downloads complete.")
     } 
 
